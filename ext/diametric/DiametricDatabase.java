@@ -27,20 +27,20 @@ public class DiametricDatabase extends RubyObject {
     public DiametricDatabase(Ruby runtime, RubyClass klazz) {
         super(runtime, klazz);
     }
-    
+
     void init(Object database) {
         this.database = database;
     }
-    
+
     Object toJava() {
         return database;
     }
-    
+
     @JRubyMethod
     public IRubyObject to_java(ThreadContext context) {
         return JavaUtil.convertJavaToUsableRubyObject(context.getRuntime(), database);
     }
-    
+
     @JRubyMethod
     public IRubyObject entity(ThreadContext context, IRubyObject arg) {
         Long entityId = null;
@@ -64,7 +64,7 @@ public class DiametricDatabase extends RubyObject {
             throw context.getRuntime().newRuntimeError("Datomic Error: " + t.getMessage());
         }
     }
-    
+
     @JRubyMethod
     public IRubyObject with(ThreadContext context, IRubyObject arg) {
         List<Object> tx_data = DiametricUtils.convertRubyTxDataToJava(context, arg);
@@ -87,6 +87,19 @@ public class DiametricDatabase extends RubyObject {
             RubyClass clazz = (RubyClass)context.getRuntime().getClassFromPath("Diametric::Persistence::Database");
             DiametricDatabase diametric_database = (DiametricDatabase)clazz.allocate();
             diametric_database.init(db_asof_t);
+            return diametric_database;
+        } catch (Throwable t) {
+            throw context.getRuntime().newRuntimeError("Datomic Error: " + t.getMessage());
+        }
+    }
+
+    @JRubyMethod
+    public IRubyObject history(ThreadContext context) {
+        try {
+            Database historical_db = (Database) clojure.lang.RT.var("datomic.api", "history").invoke(database);
+            RubyClass clazz = (RubyClass)context.getRuntime().getClassFromPath("Diametric::Persistence::Database");
+            DiametricDatabase diametric_database = (DiametricDatabase)clazz.allocate();
+            diametric_database.init(historical_db);
             return diametric_database;
         } catch (Throwable t) {
             throw context.getRuntime().newRuntimeError("Datomic Error: " + t.getMessage());
