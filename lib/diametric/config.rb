@@ -34,7 +34,7 @@ module Diametric
       settings = Environment.load_yaml(path, environment)
       @configuration = settings.with_indifferent_access
       connect!(configuration)
-      peer_setup if Diametric::Persistence.peer?
+      # peer_setup if Diametric::Persistence.peer?
       configuration
     end
 
