@@ -363,9 +363,10 @@ module Diametric
         instance = eval("#{class_name}.new")
         entity.keys.each do |key|
           matched_data = /:([a-zA-Z0-9_\.]+)\/([a-zA-Z0-9_]+)/.match(key)
-          instance.send("#{matched_data[2]}=", entity[key])
+          instance.instance_variable_set("@#{matched_data[2]}", entity[key])
         end
         instance.send("dbid=", Diametric::Persistence::Object.new(entity.get("db/id")))
+
 
         if resolve
           instance = resolve_ref_dbid(instance, conn_or_db)
