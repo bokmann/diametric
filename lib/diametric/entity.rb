@@ -363,7 +363,7 @@ module Diametric
         instance = eval("#{class_name}.new")
         entity.keys.each do |key|
           matched_data = /:([a-zA-Z0-9_\.]+)\/([a-zA-Z0-9_]+)/.match(key)
-          instance.instance_variable_set("@#{matched_data[2]}", entity[key])
+          instance.send("clean_#{matched_data[2]}=", entity[key])
         end
         instance.send("dbid=", Diametric::Persistence::Object.new(entity.get("db/id")))
 
@@ -490,6 +490,15 @@ module Diametric
           end
           instance_variable_set("@#{name}", value)
         end
+
+        define_method("clean_#{name}=") do |value|
+          if cardinality == :many
+            value = Set.new(value)
+          end
+          instance_variable_set("@#{name}", value)
+        end
+
+
       end
     end
 
