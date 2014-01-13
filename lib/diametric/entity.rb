@@ -519,7 +519,7 @@ module Diametric
     #   initialize the entity with.
     def initialize(params = {})
       self.class.defaults.merge(params).each do |k, v|
-        self.send("#{k}=", v)
+        self.send("clean_#{k}=", v)
       end
     end
 
