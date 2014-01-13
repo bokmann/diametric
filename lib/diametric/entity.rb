@@ -518,8 +518,13 @@ module Diametric
     # @param params [Hash] A hash of attributes and values to
     #   initialize the entity with.
     def initialize(params = {})
-      self.class.defaults.merge(params).each do |k, v|
+      # defaults shouldn't be dirty
+      self.class.defaults.each do |k, v|
         self.send("clean_#{k}=", v)
+      end
+      # but parameters should
+      params.each do |k, v|
+        self.send("#{k}=", v)
       end
     end
 
