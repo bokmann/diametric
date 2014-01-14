@@ -403,7 +403,7 @@ module Diametric
         if self.instance_variable_get("@peer")
           connection ||= Diametric::Persistence::Peer.connect
         end
-        reify(id, connection)
+        reify(id, connection, true)
       end
 
       # Returns the prefix for this model used in Datomic. Can be
