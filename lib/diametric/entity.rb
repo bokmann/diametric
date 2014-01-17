@@ -577,6 +577,15 @@ module Diametric
 
       namespaced_attribute = self.class.namespace(self.class.prefix, attribute_name)
       txes = []
+
+      # this kind-of works... it saves everything, but transitive saves do not
+      # have their temp ids resolved, so subsequent saves can hose things up...
+      protractions.each do |addition|
+        if addition.respond_to?(:dbid) && addition.new_record?
+          txes << addition.tx_data.first
+        end
+      end
+
       if self.class.instance_variable_get("@peer")
         @dbid ||= tempid
         txes_data(txes, ":db/retract", namespaced_attribute, retractions) unless retractions.empty?

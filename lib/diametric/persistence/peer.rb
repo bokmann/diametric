@@ -98,6 +98,15 @@ module Diametric
             if a_val.respond_to?(:tx_data)
               queue << a_val
             end
+
+            if a_val.respond_to?(:each)
+              a_val.each do |child|
+                if child.respond_to?(:tx_data)
+                  queue << child
+                end
+              end
+            end
+
           end
           child.instance_variable_set("@previously_changed", child.changes)
           child.changed_attributes.clear
