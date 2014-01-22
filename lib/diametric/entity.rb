@@ -312,17 +312,17 @@ module Diametric
         widget
       end
 
-      def resolve_ref_dbid(parent, connection)
+      def resolve_ref_dbid(parent, connection, resolve=false)
         parent.class.attribute_names.each do |e|
           if parent.class.attributes[e][:value_type] == "ref"
             ref = parent.instance_variable_get("@#{e.to_s}")
             if ref.is_a?(Fixnum) || ref.is_a?(Java::DatomicQuery::EntityMap)
-              child = reify(ref, connection)
-              child = resolve_ref_dbid(child, connection)
+              child = reify(ref, connection, resolve)
+              child = resolve_ref_dbid(child, connection, resolve)
               parent.instance_variable_set("@#{e.to_s}", child)
             elsif ref.is_a?(Set)
               children = ref.inject(Set.new) do |memo, entity|
-               child = reify(entity, connection)
+               child = reify(entity, connection, resolve)
                 memo.add(child)
                 memo
               end
@@ -369,7 +369,7 @@ module Diametric
 
 
         if resolve
-          instance = resolve_ref_dbid(instance, conn_or_db)
+          instance = resolve_ref_dbid(instance, conn_or_db, resolve)
         end
 
         instance
