@@ -25,6 +25,11 @@ module Diametric
       @connected
     end
 
+    def load_configuration(path, environment)
+      settings = Environment.load_yaml(path, environment)
+      @configuration = settings.with_indifferent_access
+    end
+
     # Load settings from a compliant diametric.yml file and make a connection. This can be used for
     # easy setup with frameworks other than Rails.
     #
@@ -36,8 +41,7 @@ module Diametric
     # @param [ String ] path The path to the file.
     # @param [ String, Symbol ] environment The environment to load.
     def load_and_connect!(path, environment = nil)
-      settings = Environment.load_yaml(path, environment)
-      @configuration = settings.with_indifferent_access
+      load_configuration(path, environment)
       connect!(configuration)
       # peer_setup if Diametric::Persistence.peer?
       configuration

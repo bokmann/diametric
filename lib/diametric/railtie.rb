@@ -18,7 +18,8 @@ module Rails
         config_file = Rails.root.join("config", "diametric.yml")
         if config_file.file?
           begin
-            ::Diametric::Config.load_and_connect!(config_file)
+            ::Diametric::Config.load_configuration(config_file, Rails.env)
+            ::Diametric::Config.connect!(::Diametric::Config.configuration)
           rescue Exception => e
             handle_configuration_error(e)
           end
