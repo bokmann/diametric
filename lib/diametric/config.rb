@@ -20,6 +20,11 @@ module Diametric
       configuration.present?
     end
 
+    @connected = false
+    def connected?
+      @connected
+    end
+
     # Load settings from a compliant diametric.yml file and make a connection. This can be used for
     # easy setup with frameworks other than Rails.
     #
@@ -43,6 +48,7 @@ module Diametric
     # @param [ Hash ] configuration The configuration of the database to connect to. See {Persistence.establish_base_connection} for valid options.
     def connect!(configuration)
       ::Diametric::Persistence.establish_base_connection(configuration)
+      @connected = true
     end
 
     private
